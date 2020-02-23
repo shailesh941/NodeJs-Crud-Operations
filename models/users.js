@@ -1,34 +1,18 @@
 var mongoose = require('mongoose');
 //console.log(UserSchema);
 var UserSchema = new mongoose.Schema({
-  first_name: {
-    type: String,
-    unique: false,
-    required: true,
-    trim: false
-  } ,
-  last_name: {
-    type: String,
-    unique: false,
-    required: false,
-  },
+  _id: mongoose.Schema.Types.ObjectId,
   email: {
     type: String,
+    required: true,
     unique: true,
-    required: true,
-    trim: true
+    match:/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
-  gender: {
+  password:{
     type: String,
-    unique: false,
     required: true,
   },
-
-  // first_name:String,
-  // last_name:String,
-  // email:String,
-  // gender:String,
-  updated_at: { type: Date, default: Date.now },
+  
 },{
   versionKey: false // You should be aware of the outcome after set to false
 });

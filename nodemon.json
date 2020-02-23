@@ -1,0 +1,5 @@
+{
+    "evn":{
+        "CON_URL":"mongodb://localhost/nodedb"
+    }
+}

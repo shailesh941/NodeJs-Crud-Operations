@@ -5,15 +5,28 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
-var databse = require('./db/database')
 var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
+var documentRouter = require('./routes/document')
 
 var app = express();
 
+mongoose.Promise = global.Promise;
+var db = mongoose.connect('mongodb://localhost/nodedb', {
+  useNewUrlParser: true, 
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify:false
+}).then(() =>  console.log('connection successful')).catch((err) => {
+  console.log(err);
+  process.exit();
+});
+//mongoose.set('useCreateIndex', true)
+
 app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 app.use(
   bodyParser.urlencoded({
@@ -21,12 +34,6 @@ app.use(
   })
 )
 
-var corsOptions = {
-  origin: 'http://example.com',
-  optionsSuccessStatus: 200 
-}
-
-mongoose.Promise = global.Promise;
 
 // view engine setup
 app.use(function (req, res, next) {
@@ -52,8 +59,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/products', productsRouter);
+app.use('/documents', documentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -62,13 +70,20 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+
+  if (err.name === 'ValidationError') {
+      var valErrors = [];
+      Object.keys(err.errors).forEach(key => valErrors.push(err.errors[key].message));
+      res.status(422).send(valErrors)
+  }
+
+  // set locals, only providing error in development
+  //res.locals.message = err.message;
+  //res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //res.status(err.status || 500);
+  //res.render('error');
 });
 
 module.exports = app;

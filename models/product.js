@@ -1,10 +1,16 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var ProductSchema = new mongoose.Schema({
-  prod_name: String,
-  prod_desc: String,
-  prod_price: Number,
-  updated_at: { type: Date, default: Date.now },
-});
+const ProductSchema = new Schema({
+        product_code: { type: String, required:true, trim:true},
+        product_name: { type: String, required:true, trim:true},
+        product_price: { type: Number, required:true, trim:true},
+        product_dicripaton: { type: String, },
+        product_imges: { type: String, },
+        updated_at: { type: Date, default: Date.now }
+    },{
+    versionKey: false // You should be aware of the outcome after set to false
+  }); 
 
-module.exports = mongoose.model('Product', ProductSchema);
+
+module.exports = mongoose.model('Products', ProductSchema);
