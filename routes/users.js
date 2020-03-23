@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const config = require('../config.json')
 var mongoose = require('mongoose');
 const User = require('../models/users');
 const bcrypt = require('bcrypt')
@@ -60,7 +61,7 @@ router.post('/login', (req, res, next) =>{
       const token =  jwt.sign({
           userId:user[0]._id,
           email:user[0].email,
-        }, 'secret', {
+        }, config.secret, {
           expiresIn:"1h"
         })
         return res.status(200).json({

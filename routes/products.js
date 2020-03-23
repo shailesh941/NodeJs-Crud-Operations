@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 const Product = require('../models/product')
+const checkAuth = require('../middleware/check-auth')
 var router = express.Router();
 router.use(bodyParser.json());
 
@@ -21,8 +22,22 @@ router.post('/add', function (req, res, next) {
 });
 
 
+router.post('/userdata', checkAuth, function(req, res, next) {
+  const userId = {create_by_user:req.body.create_by_user}
+  Product.find(userId).exec().then( result =>{
+        console.log(result);
+        res.status(200).json(result)
+    }).catch(err =>{
+    console.log(err);
+    res.status(500).json({
+    error:err
+    })
+  });
+
+});
 // Get All product
 router.get('/', function(req, res, next) {
+  const userId = req.create_by_user;
   Product.find().exec().then( result =>{
         console.log(result);
         res.status(200).json(result)

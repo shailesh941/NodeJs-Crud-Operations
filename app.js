@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
 var mongoose = require('mongoose');
+const config = require('./config.json')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
@@ -14,7 +15,7 @@ var documentRouter = require('./routes/document')
 var app = express();
 
 mongoose.Promise = global.Promise;
-var db = mongoose.connect('mongodb://localhost/nodedb', {
+var db = mongoose.connect(process.env.MONGODB_URI || config.connectionString, {
   useNewUrlParser: true, 
   useUnifiedTopology: true,
   useCreateIndex: true,
