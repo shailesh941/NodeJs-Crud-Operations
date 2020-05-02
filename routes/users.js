@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const config = require('../config.json')
 var mongoose = require('mongoose');
 const User = require('../models/users');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
 router.post('/signup', (req, res, next) => {
 
@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) =>{
       const token =  jwt.sign({
           userId:user[0]._id,
           email:user[0].email,
-        }, config.secret, {
+        }, process.env.JWT_KEY, {
           expiresIn:"1h"
         })
         return res.status(200).json({

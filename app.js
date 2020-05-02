@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
 var mongoose = require('mongoose');
-const config = require('./config.json')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
@@ -15,7 +14,7 @@ var documentRouter = require('./routes/document')
 var app = express();
 
 mongoose.Promise = global.Promise;
-var db = mongoose.connect(process.env.MONGODB_URI || config.connectionString, {
+var db = mongoose.connect(process.env.CON_URL || 'mongodb://localhost/nodedb', {
   useNewUrlParser: true, 
   useUnifiedTopology: true,
   useCreateIndex: true,
@@ -26,8 +25,8 @@ var db = mongoose.connect(process.env.MONGODB_URI || config.connectionString, {
 });
 //mongoose.set('useCreateIndex', true)
 
-app.use(bodyParser.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors())
 app.use(
   bodyParser.urlencoded({

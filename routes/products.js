@@ -1,11 +1,14 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 const Product = require('../models/product')
+const jwt = require('jsonwebtoken')
 const checkAuth = require('../middleware/check-auth')
 var router = express.Router();
 router.use(bodyParser.json());
 
-router.post('/add', function (req, res, next) {
+
+
+router.post('/add', checkAuth,  function (req, res, next) {
   const productData = new Product(req.body);
   productData.save().then( item => {
             res.status(200).json({
@@ -22,7 +25,10 @@ router.post('/add', function (req, res, next) {
 });
 
 
-router.post('/userdata', checkAuth, function(req, res, next) {
+router.post('/list', checkAuth, function(req, res, next) {
+  console.log(checkAuth)
+  //var decoded = jwt.decode(token, {complete: true});
+  //console.log(decoded);
   const userId = {create_by_user:req.body.create_by_user}
   Product.find(userId).exec().then( result =>{
         console.log(result);
@@ -36,9 +42,12 @@ router.post('/userdata', checkAuth, function(req, res, next) {
 
 });
 // Get All product
-router.get('/', function(req, res, next) {
-  const userId = req.create_by_user;
-  Product.find().exec().then( result =>{
+router.get('/', checkAuth, function(req, res, next) {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY)
+  //console.log(decoded);
+  const userId = decoded.userId;
+  Product.find(userId).exec().then( result =>{
         console.log(result);
         res.status(200).json(result)
     }).catch(err =>{

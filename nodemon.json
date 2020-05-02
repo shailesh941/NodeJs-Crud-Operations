@@ -1,5 +1,6 @@
 {
     "evn":{
-        "CON_URL":"mongodb://localhost/nodedb"
+        "CON_URL":"mongodb://localhost/nodedb",
+        "JWT_KEY": "secret"
     }
 }
