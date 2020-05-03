@@ -26,12 +26,11 @@ router.post('/add', checkAuth,  function (req, res, next) {
 
 
 router.post('/list', checkAuth, function(req, res, next) {
-  console.log(checkAuth)
-  //var decoded = jwt.decode(token, {complete: true});
-  //console.log(decoded);
-  const userId = {create_by_user:req.body.create_by_user}
-  Product.find(userId).exec().then( result =>{
-        console.log(result);
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY)
+  const user_Id = decoded.userId;
+  Product.find({create_by_user: user_Id}).exec().then( result =>{
+        //console.log(result);
         res.status(200).json(result)
     }).catch(err =>{
     console.log(err);
@@ -41,13 +40,14 @@ router.post('/list', checkAuth, function(req, res, next) {
   });
 
 });
+
 // Get All product
-router.get('/', checkAuth, function(req, res, next) {
-  const token = req.headers.authorization.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.JWT_KEY)
-  //console.log(decoded);
-  const userId = decoded.userId;
-  Product.find(userId).exec().then( result =>{
+router.get('/alllist', checkAuth, function(req, res, next) {
+  if (req.headers && req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const user_Id = decoded.userId;
+    Product.find({create_by_user: user_Id}).exec().then( result =>{
         console.log(result);
         res.status(200).json(result)
     }).catch(err =>{
@@ -56,6 +56,9 @@ router.get('/', checkAuth, function(req, res, next) {
     error:err
     })
   });
+}
+  
+  
 
 });
 

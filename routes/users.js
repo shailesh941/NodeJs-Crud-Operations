@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 const User = require('../models/users');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const checkAuth = require('../middleware/check-auth')
 require('dotenv').config();
 
 router.post('/signup', (req, res, next) => {
@@ -85,7 +86,27 @@ router.post('/login', (req, res, next) =>{
 });
 
 
-router.delete('/:userId', (req, res, next) =>{
+router.get('/:userId', checkAuth, function(req, res, next) {
+  const id = req.params.userId
+  User.findById(id).exec().then( result =>{
+         console.log(result);
+         if(result){
+          res.status(200).json(result)
+         }else{
+          res.status(400).json({
+            message:"No valid Entry Found"
+          })
+         }   
+  }).catch(err =>{
+    console.log(err);
+    res.status(500).json({
+      error:err
+    })
+  });
+
+});
+
+router.delete('/:userId', checkAuth, (req, res, next) =>{
   User.remove({
     _id:req.params.userId
   }).exec().then(
