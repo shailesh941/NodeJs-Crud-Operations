@@ -23,6 +23,9 @@ router.post('/signup', (req, res, next) => {
         }else{
           const user = new User({
             _id: new mongoose.Types.ObjectId,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            dateDob:req.body.dateDob,
             email:req.body.email,
             password: hash,
           });
@@ -61,6 +64,8 @@ router.post('/login', (req, res, next) =>{
       if(result){
       const token =  jwt.sign({
           userId:user[0]._id,
+          firstName:user[0].firstName,
+          lastName:user[0].lastName,
           email:user[0].email,
         }, process.env.JWT_KEY, {
           expiresIn:"1h"
