@@ -7,7 +7,7 @@ const ProductSchema = new Schema({
         product_price: { type: Number, required:true, trim:true},
         product_dicripaton: { type: String, },
         product_imges: { type: String, },
-        create_by_user:{type: String, require:true},
+        userId:{type: String},
         updated_at: { type: Date, default: Date.now }
     },{
     versionKey: false // You should be aware of the outcome after set to false
