@@ -67,27 +67,71 @@ const storage = multer.diskStorage({
   })
   
   
-  // GET All User
-  router.get("/", (req, res, next) => {
-    DocumentSchema.find().then(data => {
-      res.status(200).json({
-        message: "Users retrieved successfully!",
-        users: data
-      });
+  router.get('/list', checkAuth, function(req, res, next) {
+
+    DocumentSchema.find({userId: req.userId}).exec().then( result =>{
+        console.log(result);
+            res.status(200).json(result)
+        }).catch(err =>{
+        console.log(err);
+        res.status(500).json({
+        error:err
+        })
     });
+  
   });
   
+  // Get Product with id
+  router.get('/:id', function(req, res, next) {
+    const id = req.params.id
+    DocumentSchema.findById(id).exec().then( result =>{
+           console.log(result);
+           if(result){
+            res.status(200).json(result)
+           }else{
+            res.status(400).json({
+              message:"No valid Entry Found"
+            })
+           }   
+    }).catch(err =>{
+      console.log(err);
+      res.status(500).json({
+        error:err
+      })
+    });
   
-  // GET User
-  router.get("/:id", (req, res, next) => {
-    DocumentSchema.findById(req.params.id).then(data => {
-      if (data) {
-        res.status(200).json(post);
-      } else {
-        res.status(404).json({
-          message: "User not found!"
-        });
-      }
+  });
+  
+  // Update Product
+  router.put('/:id', function(req, res, next) {
+    DocumentSchema.findByIdAndUpdate(req.params.id, req.body).exec().then( result =>{
+      console.log(result);
+      res.status(200).json({
+        message:"Update Product Data",
+        item:result
+      })
+    }).catch(err =>{
+      console.log(err);
+      res.status(500).json({
+        error:err
+      })
+    });
+  
+  });
+  
+  // Delete Product
+  router.delete('/:id', function(req, res, next) {
+    DocumentSchema.findByIdAndRemove(req.params.id, req.body).exec().then( result =>{
+      console.log(result);
+      res.status(200).json({
+        message:"Deleted Data",
+        item:result
+      })
+    }).catch(err =>{
+      console.log(err);
+      res.status(500).json({
+        error:err
+      })
     });
   });
 

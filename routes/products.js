@@ -91,7 +91,7 @@ router.get('/list', checkAuth, function(req, res, next) {
 });
 
 // Get Product with id
-router.get('/:id', function(req, res, next) {
+router.get('/:id', checkAuth,  function(req, res, next) {
   const id = req.params.id
   Product.findById(id).exec().then( result =>{
          console.log(result);
@@ -112,8 +112,9 @@ router.get('/:id', function(req, res, next) {
 });
 
 // Update Product
-router.put('/:id', function(req, res, next) {
-  Product.findByIdAndUpdate(req.params.id, req.body).exec().then( result =>{
+router.put('update/:id', checkAuth, function(req, res, next) {
+  console.log(req.params.id, req.body);
+  Product.findByIdAndUpdate(req.params.id, {$set: req.body}).exec().then( result =>{
     console.log(result);
     res.status(200).json({
       message:"Update Product Data",
