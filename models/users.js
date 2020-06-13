@@ -15,6 +15,12 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  reset_password_token:{
+    type: String,
+  },
+  reset_password_expires:{
+    type: String,
+  },
   
 },{
   versionKey: false // You should be aware of the outcome after set to false

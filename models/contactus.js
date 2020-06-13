@@ -10,6 +10,8 @@ const ContactSchema = new Schema({
     state:String,
     city:String,
     pinno:String,
+    created_by:String,
+    avatar: {type: String},
     updated_at: { type: Date, default: Date.now }
     },{
     versionKey: false // You should be aware of the outcome after set to false

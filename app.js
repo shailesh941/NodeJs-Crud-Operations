@@ -11,6 +11,8 @@ var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 var documentRouter = require('./routes/document')
 var contactusRouter = require('./routes/contactus')
+var userHandlers = require('./routes/authentication');
+var User = require('./models/authentication');
 
 var app = express();
 
@@ -66,6 +68,10 @@ app.use('/user', usersRouter);
 app.use('/products', productsRouter);
 app.use('/documents', documentRouter);
 app.use('/contact', contactusRouter);
+app.route('/auth/register').post(userHandlers.register);
+app.route('/auth/sign_in').post(userHandlers.sign_in);
+app.route('/auth/forgot_password').get(userHandlers.render_forgot_password_template).post(userHandlers.forgot_password);
+app.route('/auth/reset_password').get(userHandlers.render_reset_password_template).post(userHandlers.reset_password);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
