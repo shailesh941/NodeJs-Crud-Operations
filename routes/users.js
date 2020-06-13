@@ -10,7 +10,7 @@ const checkAuth = require('../middleware/check-auth');
 require('dotenv').config();
 
 var hbs = require('nodemailer-express-handlebars');
-email = process.env.MAILER_EMAIL_ID || 'shailesh941@gmail.com',
+var email = process.env.MAILER_EMAIL_ID || 'shailesh941@gmail.com',
 pass = process.env.MAILER_PASSWORD || 'anrzihsxygavdrxe',
 nodemailer = require('nodemailer');
 var path = require('path');

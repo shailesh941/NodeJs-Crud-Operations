@@ -81,8 +81,22 @@ router.post('/add', checkAuth, upload.single('avatar'), (req, res, next) =>{
 router.put('/update/:id', checkAuth, upload.single('avatar'), function(req, res, next) {
 
   const id = req.params.id;
-  const url = req.protocol + '://' + req.get('host')
-  const updateObject = {
+  const url = req.protocol + '://' + req.get('host');
+  let updateObject;
+  if(req.body.avatar != null){
+    updateObject = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      mobile: req.body.mobile,
+      address: req.body.address,
+      state: req.body.state,
+      city: req.body.city,
+      pinno: req.body.pinno,
+      created_by:req.userId
+    }
+  }else{
+    updateObject = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -93,6 +107,7 @@ router.put('/update/:id', checkAuth, upload.single('avatar'), function(req, res,
       pinno: req.body.pinno,
       created_by:req.userId,
       avatar: url + '/uploads/' + req.file.filename,
+    }
   }
 
   Contactus.findOneAndUpdate({_id:id}, {$set: updateObject}, {new: true}).then(() => {

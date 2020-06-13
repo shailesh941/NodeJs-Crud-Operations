@@ -8,32 +8,32 @@ var router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
+const DIR = 'uploads/';
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" +file.originalname)
-  }
-});
-
-const fileFilter = (req, file, cb) =>{
-  if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-    cb(null, true);
-  } else {
-    cb(null, false);
-    return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-  }
-}
-//const upload = multer({ dest: 'uploads/' });
-const upload = multer({ 
-  storage: storage, 
-  limits:{
-    fileSize:1024 * 1024 * 5
-  },
-  fileFilter:fileFilter
-
-})
+    destination: (req, file, cb) => {
+      cb(null, DIR);
+    },
+    filename: (req, file, cb) => {
+      const fileName = Date.now() + "-" + file.originalname.toLowerCase().split(' ').join('-');
+      cb(null, fileName)
+    }
+  });
+  // Multer Mime Type Validation
+  var upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+        cb(null, true);
+      } else {
+        cb(null, false);
+        return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+      }
+    }
+  });
 
 router.post('/add', checkAuth, upload.single('product_imges'), (req, res, next) =>{
   const url = req.protocol + '://' + req.get('host')
@@ -61,19 +61,46 @@ router.post('/add', checkAuth, upload.single('product_imges'), (req, res, next) 
 
 });
 
+router.put('/update/:id', checkAuth, upload.single('product_imges'), function(req, res, next) {
+  console.log(req.body);
+  const id = req.params.id;
+  const url = req.protocol + '://' + req.get('host')
+  let updateProduct;
+  if(req.body.product_imges != null){
+    updateProduct = {
+      product_code: req.body.product_code,
+      product_name: req.body.product_name,
+      product_price: req.body.product_price,
+      product_dicripaton: req.body.product_dicripaton,
+      product_imges:req.body.product_imges
+    }
+  }else{
+    updateProduct = {
+      product_code: req.body.product_code,
+      product_name: req.body.product_name,
+      product_price: req.body.product_price,
+      product_dicripaton: req.body.product_dicripaton,
+      product_imges: url + '/uploads/' + req.file.filename
+    }
+  }
 
-// router.post('/list', checkAuth, function(req, res, next) {
-//   Product.find({userId: req.userId}).exec().then( result =>{
-//         //console.log(result);
-//         res.status(200).json(result)
-//     }).catch(err =>{
-//     console.log(err);
-//     res.status(500).json({
-//     error:err
-//     })
-//   });
+  Product.update({_id:id}, {$set: updateProduct}, {new: true}).then(() => {
+      res.status(200).json({
+        success: true,
+        message: 'Product is updated',
+        updateCause: updateProduct,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: 'Server error. Please try again.'
+      });
+    });
 
-// });
+
+});
+
 
 // Get All product
 router.get('/list', checkAuth, function(req, res, next) {
@@ -111,23 +138,6 @@ router.get('/:id', checkAuth,  function(req, res, next) {
 
 });
 
-// Update Product
-router.put('update/:id', checkAuth, function(req, res, next) {
-  console.log(req.params.id, req.body);
-  Product.findByIdAndUpdate(req.params.id, {$set: req.body}).exec().then( result =>{
-    console.log(result);
-    res.status(200).json({
-      message:"Update Product Data",
-      item:result
-    })
-  }).catch(err =>{
-    console.log(err);
-    res.status(500).json({
-      error:err
-    })
-  });
-
-});
 
 // Delete Product
 router.delete('/:id', function(req, res, next) {
