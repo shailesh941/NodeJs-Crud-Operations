@@ -103,9 +103,23 @@ router.put('/update/:id', checkAuth, upload.single('product_imges'), function(re
 
 
 // Get All product
-router.get('/list', checkAuth, function(req, res, next) {
+router.post('/list', checkAuth, function(req, res, next) {
+  console.log(req.body);
+  let filterData;
 
-  Product.find({userId: req.userId}).exec().then( result =>{
+  if(req.body != null){
+    filterData= {
+      userId: req.userId,
+      product_name: req.body.product_name
+    }
+  }else{
+    filterData= {
+      userId: req.userId,
+    }
+  }
+  
+
+  Product.find(filterData).exec().then( result =>{
       console.log(result);
           res.status(200).json(result)
       }).catch(err =>{
@@ -140,7 +154,7 @@ router.get('/:id', checkAuth,  function(req, res, next) {
 
 
 // Delete Product
-router.delete('/:id', function(req, res, next) {
+router.delete('/delete/:id', function(req, res, next) {
   Product.findByIdAndRemove(req.params.id, req.body).exec().then( result =>{
     console.log(result);
     res.status(200).json({
