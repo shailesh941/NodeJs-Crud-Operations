@@ -40,6 +40,7 @@ router.post('/add', checkAuth, upload.single('product_imges'), (req, res, next) 
   let productData =  new Product({
           product_code: req.body.product_code,
           product_name: req.body.product_name,
+          product_cat: req.body.product_cat,
           product_price: req.body.product_price,
           product_dicripaton: req.body.product_dicripaton,
           product_imges: url + '/uploads/' + req.file.filename,
@@ -70,6 +71,7 @@ router.put('/update/:id', checkAuth, upload.single('product_imges'), function(re
     updateProduct = {
       product_code: req.body.product_code,
       product_name: req.body.product_name,
+      product_cat: req.body.product_cat,
       product_price: req.body.product_price,
       product_dicripaton: req.body.product_dicripaton,
       product_imges:req.body.product_imges
@@ -78,6 +80,7 @@ router.put('/update/:id', checkAuth, upload.single('product_imges'), function(re
     updateProduct = {
       product_code: req.body.product_code,
       product_name: req.body.product_name,
+      product_cat: req.body.product_cat,
       product_price: req.body.product_price,
       product_dicripaton: req.body.product_dicripaton,
       product_imges: url + '/uploads/' + req.file.filename
@@ -104,22 +107,30 @@ router.put('/update/:id', checkAuth, upload.single('product_imges'), function(re
 
 // Get All product
 router.post('/list', checkAuth, function(req, res, next) {
-  console.log(req.body);
-  let filterData;
 
-  if(req.body != null){
-    filterData= {
-      userId: req.userId,
-      product_name: req.body.product_name
-    }
-  }else{
-    filterData= {
-      userId: req.userId,
-    }
+  // const orderByColumn = req.body.updated_at || 'updated_at'
+  // const orderByDirection = req.body.order_by_direction || 'desc'
+  const page = req.body.page || 1
+  const limit = req.body.limit || 5
+
+  let filterData = {
+    userId: req.userId,
+  };
+  if(req.body.product_cat){
+    filterData.product_cat = req.body.product_cat
   }
+
+  // const product = await knex('Product')
+  //   .where(filterData)
+  //   .orderBy(orderByColumn, orderByDirection)
+  //   .limit(limit)
+  //   .offset((page - 1) * limit)
+
+  //   res.send({ product })
+ 
   
 
-  Product.find(filterData).exec().then( result =>{
+  Product.find(filterData).sort({'updated_at': -1}).limit(limit).skip(page).exec().then( result =>{
       console.log(result);
           res.status(200).json(result)
       }).catch(err =>{

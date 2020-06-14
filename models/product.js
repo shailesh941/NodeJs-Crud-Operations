@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
         product_code: { type: String, required:true, trim:true},
+        product_cat: { type: String, required:true, trim:true},
         product_name: { type: String, required:true, trim:true},
         product_price: { type: String, required:true, trim:true},
         product_dicripaton: { type: String},
