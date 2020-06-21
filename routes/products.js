@@ -108,10 +108,19 @@ router.put('/update/:id', checkAuth, upload.single('product_imges'), function(re
 // Get All product
 router.post('/list', checkAuth, function(req, res, next) {
 
-  // const orderByColumn = req.body.updated_at || 'updated_at'
-  // const orderByDirection = req.body.order_by_direction || 'desc'
-  const page = req.body.page || 1
-  const limit = req.body.limit || 5
+  //const orderByColumn = req.body.updated_at || 'updated_at'
+  //const orderByDirection = req.body.order_by_direction || 'desc'
+  //const page = req.body.page || 0;
+  //const perPage = 10;
+  const page = Math.max(0, req.body.page) || 0;
+  const limit = req.body.limit || 8;
+  const short = {
+    'updated_at': -1
+  }
+  // const pageOptions = {
+  //   page: parseInt(req.body.page, 10) || 0,
+  //   limit: parseInt(req.body.limit, 10) || 10
+  // }
 
   let filterData = {
     userId: req.userId,
@@ -128,9 +137,9 @@ router.post('/list', checkAuth, function(req, res, next) {
 
   //   res.send({ product })
  
-  
 
-  Product.find(filterData).sort({'updated_at': -1}).limit(limit).skip(page).exec().then( result =>{
+
+  Product.find(filterData).sort(short).limit(limit).skip((page -1) * limit).then( result =>{
       console.log(result);
           res.status(200).json(result)
       }).catch(err =>{
