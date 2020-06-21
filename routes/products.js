@@ -138,16 +138,27 @@ router.post('/list', checkAuth, function(req, res, next) {
   //   res.send({ product })
  
 
+//  let allData = {
+//     total:0,
+//     data:[],
+//   }
 
-  Product.find(filterData).sort(short).limit(limit).skip((page -1) * limit).then( result =>{
-      console.log(result);
-          res.status(200).json(result)
+   Product.find(filterData).sort(short).limit(limit).skip((page -1) * limit).then( result =>{
+      //console.log(result);
+      res.status(200).json(result)
+      //allData.data = result;
       }).catch(err =>{
       console.log(err);
       res.status(500).json({
       error:err
       })
   });
+  // Product.count({userId: req.userId}).then( result =>{
+  //   allData.total = result
+  //   res.status(200).json(allData)
+  // })
+
+  
 
 });
 
