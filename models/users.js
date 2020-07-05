@@ -21,8 +21,15 @@ var UserSchema = new mongoose.Schema({
   reset_password_expires:{
     type: String,
   },
+  documents : [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'documents'
+    }
+  ]
   
-},{
+},
+{
   versionKey: false // You should be aware of the outcome after set to false
 });
 

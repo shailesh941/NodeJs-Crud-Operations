@@ -7,10 +7,15 @@ let documentSchema = new Schema({
     name: { type: String},
     price:{ type: String},
     avatar: {type: String},
-    userId:{type: String}
-    }, {
-      collection: 'Document'
-})
+    users :{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'users'
+          }
+
+    },
+    {
+      versionKey: false // You should be aware of the outcome after set to false
+    });
 
 
 module.exports = mongoose.model('Document', documentSchema);

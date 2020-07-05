@@ -59,7 +59,6 @@ const storage = multer.diskStorage({
         }
       })
     }).catch(err => {
-      console.log(err),
         res.status(500).json({
           error: err
         });
@@ -68,7 +67,6 @@ const storage = multer.diskStorage({
   
   
   router.get('/list', checkAuth, function(req, res, next) {
-
     DocumentSchema.find({userId: req.userId}).exec().then( result =>{
         console.log(result);
             res.status(200).json(result)
