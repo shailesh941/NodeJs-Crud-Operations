@@ -11,6 +11,8 @@ var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 var documentRouter = require('./routes/document')
 var contactusRouter = require('./routes/contactus')
+var categoryRouter = require('./routes/category')
+var bookRouter = require('./routes/book')
 var userHandlers = require('./routes/authentication');
 var User = require('./models/authentication');
 
@@ -68,6 +70,8 @@ app.use('/user', usersRouter);
 app.use('/products', productsRouter);
 app.use('/documents', documentRouter);
 app.use('/contact', contactusRouter);
+app.use('/category', categoryRouter);
+app.use('/book', bookRouter);
 app.route('/auth/register').post(userHandlers.register);
 app.route('/auth/sign_in').post(userHandlers.sign_in);
 app.route('/auth/forgot_password').get(userHandlers.render_forgot_password_template).post(userHandlers.forgot_password);

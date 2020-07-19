@@ -143,7 +143,11 @@ router.post('/list', checkAuth, function(req, res, next) {
 //     data:[],
 //   }
 
-   Product.find(filterData).sort(short).limit(limit).skip((page -1) * limit).then( result =>{
+   Product.find(filterData)
+   .sort(short)
+   .limit(limit)
+   .skip((page -1) * limit)
+   .then( result =>{
       //console.log(result);
       res.status(200).json(result)
       //allData.data = result;
